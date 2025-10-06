@@ -11,12 +11,12 @@ services:
     volumes:
       # Mount your local configuration file
       - ./odoo.conf:/etc/odoo/odoo.conf
-      # Map your custom addons folder to /mnt/extra-addons inside the container
+      # Map your custom addons folder
       - ./custom_addons:/mnt/extra-addons
       # Folder for persistent Odoo data (filestore, sessions, etc.)
       - ./odoo-data:/var/lib/odoo
     environment:
-      # These environment variables override db_ settings in odoo.conf if needed
+      # Optional: these can override db_ settings in odoo.conf
       - HOST=db
       - USER=odoo
       - PASSWORD=Pr0t3ct10n!
@@ -26,11 +26,10 @@ services:
     image: postgres:15
     container_name: odoo18-db
     environment:
-      - POSTGRES_DB=website_demo_main
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=Pr0t3ct10n!
     volumes:
-      - ./pg-data:/var/lib/postgresql/data
+      - ./pg-data:/var/lib/postgresql/data  # Persistent database
     restart: unless-stopped
 
 volumes:
