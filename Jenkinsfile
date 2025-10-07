@@ -2,38 +2,38 @@ pipeline {
     agent any
 
     environment {
-        // Replace with your GitHub repo URL (HTTPS or SSH)
-        GIT_REPO = 'https://github.com/kelvindeguia/odoo18-devops-pipeline.git'
-        // Optional: name for your Docker image
-        IMAGE_NAME = 'odoo18-custom'
+        IMAGE_NAME = "odoo18-auto"
     }
 
     stages {
-        stage('Pull Latest Code') {
+        stage('Checkout') {
             steps {
-                echo 'Pulling latest code from GitHub...'
-                git branch: 'main', url: "${GIT_REPO}"
+                git branch: 'main', url: 'https://github.com/kelvindeguia/odoo18-devops-pipeline.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Odoo 18 Docker image...'
                 script {
-                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
             }
         }
 
-        stage('Recreate Containers') {
+        stage('Stop & Remove Old Container') {
             steps {
-                echo 'Restarting containers using docker-compose...'
                 script {
-                    // Stop and remove old containers, rebuild and restart fresh ones
-                    sh '''
-                    docker compose down
-                    docker compose up -d --build
-                    '''
+                    // Stops and removes any running container with the same name
+                    sh "docker stop ${IMAGE_NAME} || true"
+                    sh "docker rm ${IMAGE_NAME} || true"
+                }
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                script {
+                    sh "docker run -d --name ${IMAGE_NAME} -p 8069:8069 ${IMAGE_NAME}:latest"
                 }
             }
         }
@@ -41,10 +41,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment successful!'
+            echo "✅ Build & Deploy successful!"
         }
         failure {
-            echo '❌ Deployment failed. Check logs for details.'
+            echo "❌ Build failed. Check console output."
         }
     }
 }
