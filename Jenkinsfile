@@ -3,6 +3,11 @@ pipeline {
 
     environment {
         IMAGE_NAME = "odoo18-auto"
+        DB_CONTAINER = "odoo18-db"
+        DB_HOST = "db"
+        DB_USER = "odoo"
+        DB_PASSWORD = "odoo"
+        ODOO_PORT = "8070"
     }
 
     stages {
@@ -23,7 +28,6 @@ pipeline {
         stage('Stop & Remove Old Container') {
             steps {
                 script {
-                    // Stops and removes any running container with the same name
                     sh "docker stop ${IMAGE_NAME} || true"
                     sh "docker rm ${IMAGE_NAME} || true"
                 }
@@ -33,7 +37,16 @@ pipeline {
         stage('Run New Container') {
             steps {
                 script {
-                    sh "docker run -d --name ${IMAGE_NAME} -p 8069:8069 ${IMAGE_NAME}:latest"
+                    sh """
+                    docker run -d \
+                        --name ${IMAGE_NAME} \
+                        --link ${DB_CONTAINER}:${DB_HOST} \
+                        -e HOST=${DB_HOST} \
+                        -e USER=${DB_USER} \
+                        -e PASSWORD=${DB_PASSWORD} \
+                        -p ${ODOO_PORT}:8069 \
+                        ${IMAGE_NAME}:latest
+                    """
                 }
             }
         }
@@ -41,7 +54,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build & Deploy successful!"
+            echo "✅ Build & Deploy successful! Odoo running at http://localhost:${ODOO_PORT}"
         }
         failure {
             echo "❌ Build failed. Check console output."
