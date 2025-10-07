@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "odoo18-auto"
+        IMAGE_NAME = "odoo18"
     }
 
     stages {
