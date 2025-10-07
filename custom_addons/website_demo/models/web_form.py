@@ -8,3 +8,4 @@ class WebForm(models.Model):
     name = fields.Char(string='Form Name', required=True, store=True)
     age = fields.Integer(string='Age', store=True)
     description = fields.Text(string='Description', store=True)
+    test_field = fields.Char(string="Test Field", store=True)
