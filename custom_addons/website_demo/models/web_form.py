@@ -10,3 +10,5 @@ class WebForm(models.Model):
     description = fields.Text(string='Description', store=True)
     test_field = fields.Char(string="Test Field", store=True)
     new_field = fields.Char(string="New Field", store=True)
+    
+    test_new_field = fields.Char(string="Test New Field", store=True)
