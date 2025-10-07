@@ -9,3 +9,4 @@ class WebForm(models.Model):
     age = fields.Integer(string='Age', store=True)
     description = fields.Text(string='Description', store=True)
     test_field = fields.Char(string="Test Field", store=True)
+    new_field = fields.Char(string="New Field", store=True)
