@@ -6,7 +6,7 @@ pipeline {
         DB_HOST = "odoo18-db"
         DB_PORT = "5432"
         DB_USER = "odoo"
-        DB_PASSWORD = "odoo"
+        DB_PASSWORD = "Pr0t3ct10n!"
         DB_NAME = "postgres"
         NETWORK_NAME = "odoo18-network"
     }
