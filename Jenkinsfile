@@ -60,7 +60,7 @@ pipeline {
                           -e DB_HOST=odoo18-db \
                           -e DB_PORT=5432 \
                           -e DB_USER=odoo \
-                          -e DB_PASSWORD=odoo \
+                          -e DB_PASSWORD=Pr0t3ct10n! \
                           -e DB_NAME=postgres \
                           -p 8069:8069 \
                           ${IMAGE_NAME}:latest
