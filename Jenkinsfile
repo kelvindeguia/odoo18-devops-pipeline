@@ -30,12 +30,12 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    if [ -z "$(docker network ls --filter name=^${NETWORK_NAME}$ -q)" ]; then
-                        echo "Creating network ${NETWORK_NAME}..."
-                        docker network create ${NETWORK_NAME}
-                    else
-                        echo "Network ${NETWORK_NAME} already exists."
-                    fi
+                        if [ -z "$(docker network ls --filter name=^${NETWORK_NAME}$ -q)" ]; then
+                            echo "Creating network ${NETWORK_NAME}..."
+                            docker network create ${NETWORK_NAME}
+                        else
+                            echo "Network ${NETWORK_NAME} already exists."
+                        fi
                     '''
                 }
             }
@@ -54,16 +54,16 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker run -d \
-                        --name ${IMAGE_NAME} \
-                        --network ${NETWORK_NAME} \
-                        -e DB_HOST=${DB_HOST} \
-                        -e DB_PORT=${DB_PORT} \
-                        -e DB_USER=${DB_USER} \
-                        -e DB_PASSWORD=${DB_PASSWORD} \
-                        -e DB_NAME=${DB_NAME} \
-                        -p 8069:8069 \
-                        ${IMAGE_NAME}:latest
+                        docker run -d \
+                            --name ${IMAGE_NAME} \
+                            --network ${NETWORK_NAME} \
+                            -e DB_HOST=${DB_HOST} \
+                            -e DB_PORT=${DB_PORT} \
+                            -e DB_USER=${DB_USER} \
+                            -e DB_PASSWORD=${DB_PASSWORD} \
+                            -e DB_NAME=${DB_NAME} \
+                            -p 8069:8069 \
+                            ${IMAGE_NAME}:latest
                     '''
                 }
             }
@@ -74,3 +74,8 @@ pipeline {
         success {
             echo "✅ Build & Deploy successful!"
         }
+        failure {
+            echo "❌ Build failed. Check console output."
+        }
+    }
+}
