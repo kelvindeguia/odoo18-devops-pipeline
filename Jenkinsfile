@@ -55,15 +55,15 @@ pipeline {
                 script {
                     sh '''
                         docker run -d \
-                            --name ${IMAGE_NAME} \
-                            --network ${NETWORK_NAME} \
-                            -e DB_HOST=${DB_HOST} \
-                            -e DB_PORT=${DB_PORT} \
-                            -e DB_USER=${DB_USER} \
-                            -e DB_PASSWORD=${DB_PASSWORD} \
-                            -e DB_NAME=${DB_NAME} \
-                            -p 8069:8069 \
-                            ${IMAGE_NAME}:latest
+                          --name ${IMAGE_NAME} \
+                          --network odoo_default \
+                          -e DB_HOST=odoo18-db \
+                          -e DB_PORT=5432 \
+                          -e DB_USER=odoo \
+                          -e DB_PASSWORD=odoo \
+                          -e DB_NAME=postgres \
+                          -p 8069:8069 \
+                          ${IMAGE_NAME}:latest
                     '''
                 }
             }
