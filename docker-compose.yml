@@ -2,24 +2,16 @@ version: '3.8'
 
 services:
   web:
-    image: odoo:18.0
+    image: odoo18:latest      # <-- Match Jenkins build
     container_name: odoo18
     depends_on:
       - db
     ports:
       - "8069:8069"
     volumes:
-      # Mount your local configuration file
       - ./odoo.conf:/etc/odoo/odoo.conf
-      # Map your custom addons folder
       - ./custom_addons:/mnt/extra-addons
-      # Folder for persistent Odoo data (filestore, sessions, etc.)
       - ./odoo-data:/var/lib/odoo
-    environment:
-      # Optional: these can override db_ settings in odoo.conf
-      - HOST=db
-      - USER=odoo
-      - PASSWORD=Pr0t3ct10n!
     restart: unless-stopped
 
   db:
@@ -29,7 +21,7 @@ services:
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=Pr0t3ct10n!
     volumes:
-      - ./pg-data:/var/lib/postgresql/data  # Persistent database
+      - ./pg-data:/var/lib/postgresql/data
     restart: unless-stopped
 
 volumes:
