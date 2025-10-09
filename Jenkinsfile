@@ -8,7 +8,7 @@ pipeline {
         DB_USER = "odoo"
         DB_PASSWORD = "Pr0t3ct10n!"
         DB_NAME = "postgres"
-        NETWORK_NAME = "odoo18-network"
+        NETWORK_NAME = "odoo_default"
     }
 
     stages {
@@ -26,21 +26,6 @@ pipeline {
             }
         }
 
-        stage('Create Network if Not Exists') {
-            steps {
-                script {
-                    sh '''
-                        if [ -z "$(docker network ls --filter name=^${NETWORK_NAME}$ -q)" ]; then
-                            echo "Creating network ${NETWORK_NAME}..."
-                            docker network create ${NETWORK_NAME}
-                        else
-                            echo "Network ${NETWORK_NAME} already exists."
-                        fi
-                    '''
-                }
-            }
-        }
-
         stage('Stop & Remove Old Container') {
             steps {
                 script {
@@ -53,18 +38,18 @@ pipeline {
         stage('Run New Container') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         docker run -d \
                           --name ${IMAGE_NAME} \
-                          --network odoo_default \
-                          -e DB_HOST=odoo18-db \
-                          -e DB_PORT=5432 \
-                          -e DB_USER=odoo \
-                          -e DB_PASSWORD=Pr0t3ct10n! \
-                          -e DB_NAME=postgres \
+                          --network ${NETWORK_NAME} \
                           -p 8069:8069 \
+                          -v \$PWD/odoo.conf:/etc/odoo/odoo.conf \
+                          -v \$PWD/custom_addons:/mnt/extra-addons \
+                          -v \$PWD/odoo-data:/var/lib/odoo \
                           ${IMAGE_NAME}:latest
-                    '''
+                    """
+                    // 👉 If you want auto-upgrade custom module on each deployment, append:
+                    //   -- -u isw_lighthouse
                 }
             }
         }
